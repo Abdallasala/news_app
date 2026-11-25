@@ -1,3 +1,5 @@
+import 'package:evently_app_c13_sun_7_pm/Network/app_network.dart';
+import 'package:evently_app_c13_sun_7_pm/models/sources_models.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -6,6 +8,7 @@ import '../../../models/categors_data_model.dart';
 class HomeViewModel extends ChangeNotifier{
   CategoryDataModel ?_selectdatamodel ;
   ThemeMode current_theme = ThemeMode.light;
+  List<Source> _sources_list =[];
   final List<String> _listTheme = ["Light", "Dark"];
   List<String> get listTheme => _listTheme;
   final List<CategoryDataModel> _categoryDataModelList =[
@@ -32,6 +35,7 @@ class HomeViewModel extends ChangeNotifier{
         categoryImage: "assets/images/technology_img.png"),
   ];
   CategoryDataModel? get selectdatamodel=> _selectdatamodel ;
+  List<Source>? get sources_list=> _sources_list ;
   List<CategoryDataModel>get categoryDataModelList => _categoryDataModelList;
   void onChangedCliecked (CategoryDataModel selectedCategoryDataModel){
     _selectdatamodel =selectedCategoryDataModel ;
@@ -55,5 +59,9 @@ class HomeViewModel extends ChangeNotifier{
     } else {
       setCurrentTheme(ThemeMode.dark);
     }
+  }
+ Future<void> getAllSources()async{
+    _sources_list=  (await AppNetwork.getsources(_selectdatamodel!.categoryID))!;
+    notifyListeners();
   }
 }

@@ -1,25 +1,28 @@
+import 'dart:convert';
 
-import 'package:evently_app_c13_sun_7_pm/core/constant/end_points.dart';
 import 'package:http/http.dart' as http;
 import '../core/constant/constants.dart';
+import '../core/constant/end_points.dart';
+import '../models/sources_models.dart';
+
 abstract class AppNetwork {
-  static getsources(String categoryId)async{
-    try{
-    var queryparmaters ={
-      'apiKey':Constants.apiKEY,
-      'category':categoryId
-    };
-    var url =Uri.https(
-      Constants.baseURL ,
-      EndPoints.endpoints ,
-      queryparmaters,
-    );
-  var data = await http.get(url);
-    print(data.request);
-  print(data.body);
-    }
-    catch(e){
-//throw Error();
+  static Future<List<Source>?> getsources(String categoryId) async {
+    try {
+      var queryparmaters = {
+        'apiKey': Constants.apiKEY,
+        'category': categoryId,
+      };
+      var url = Uri.https(
+        Constants.baseURL,
+        EndPoints.endpoints,
+        queryparmaters,
+      );
+      var response = await http.get(url);
+      Map<String, dynamic> data = jsonDecode(response.body);
+      SourcesModels sourcesModels = SourcesModels.fromjson(data);
+      return sourcesModels.sources;
+    } catch (e) {
+      return null;
     }
   }
 }
